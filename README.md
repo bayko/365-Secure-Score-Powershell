@@ -19,4 +19,6 @@ ATP CLIENTS ONLY (+ 30 Points Additional)
 - Enable Advanced Threat Protection safe attachments policy - 15 Points
 
 
-Execution only requies 2 parameters for Office 365 Admin credentials.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Executing the script will prompt once for Office 365 Global Admin credentials. Those credentials will then be used to access EAC, MSOnline, and SPOnline services
