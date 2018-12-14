@@ -8,7 +8,7 @@ https://www.microsoft.com/en-ca/download/details.aspx?id=42038
 
 The following changes will be applied to the tenant account:
 
-BUSINESS PREMIUM OR ENTERPRISE CLIENT
+All Tenants 
 - Enable mailbox auditing for all mailboxes - 10 Points
 - Set 365 account passwords to never expire - 10 Points
 - Allow anonymous guest sharing links for sites and docs - 1 Point
@@ -21,7 +21,7 @@ BUSINESS PREMIUM OR ENTERPRISE CLIENT
 - Disable Anonymous Calendar Sharing  - 10 Points [not scored]
 - Create transport rule for client auto forwarding block - 20 Points [not scored]
 
-ATP CLIENTS ONLY (+ 30 Points Additional)
+ATP Licensed Tenants Only
 - Enable Advanced Threat Protection safe links policy - 15 Points
 - Enable Advanced Threat Protection safe attachments policy - 15 Points
 
