@@ -28,7 +28,7 @@ This Script will set a base level SecureScore on 365 Tenant based on the availab
 
 The following changes will be applied:
 
-BUSINESS PREMIUM OR ENTERPRISE CLIENT (+ 43 Points Total) (+25 Not Scored)
+All Tenants (+ 60 Points Total) (+55 Not Scored)
 
 - Enable mailbox auditing for all mailboxes - 10 Points
 - Set 365 account passwords to never expire - 10 Points
@@ -42,7 +42,7 @@ BUSINESS PREMIUM OR ENTERPRISE CLIENT (+ 43 Points Total) (+25 Not Scored)
 - Enable 365 Audit Data Recording - 15 Points [not scored]
 - Disable Anonymous Calendar Sharing  - 10 Points [not scored]
 
-ATP CLIENTS ONLY (+ 30 Points Additional)
+ATP Licensed Tenants Only (+ 30 Points Additional)
 
 - Enable Advanced Threat Protection safe links policy - 15 Points
 - Enable Advanced Threat Protection safe attachments policy - 15 Points
