@@ -88,8 +88,8 @@ Write-Host 'Connecting to SPO'
 $Clientdomains = get-msoldomain | Select-Object Name
 $Msdomain = $Clientdomains.name | Select-String -Pattern 'onmicrosoft.com' | Select-String -Pattern 'mail' -NotMatch
 $Msdomain = $Msdomain -replace ".onmicrosoft.com",""
-$ShareSite = "https://" + $Msdomain + ".sharepoint.com"
-Connect-SPOService -Url $ShareSite -Credential $UserCredential
+$SPOSite = "https://" + $Msdomain + ".sharepoint.com"
+Connect-SPOService -Url $SPOSite -Credential $UserCredential
 
 
 ## START SECURE SCORE BASIC CONFIGURATION ##
@@ -218,6 +218,7 @@ foreach ($Site in $Sites) {
 # Enable IRM Policy on Primary Sharepoint Site Document Library
 Write-Host 'Enabling IRM Policy on Sharepoint Documents Library'
 try{
+    $ShareSite = "https://" + $Msdomain + ".sharepoint.com"
     $Context = New-Object Microsoft.SharePoint.Client.ClientContext($ShareSite)
     $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($Username,$SecureStringPwd)
     $Context.Credentials = $Creds
