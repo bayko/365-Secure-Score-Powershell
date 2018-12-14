@@ -31,17 +31,16 @@ The following changes will be applied:
 BUSINESS PREMIUM OR ENTERPRISE CLIENT (+ 43 Points Total) (+25 Not Scored)
 
 - Enable mailbox auditing for all mailboxes - 10 Points
-- Create transport rule for client auto forwarding rule block - 20 Points
 - Set 365 account passwords to never expire - 10 Points
 - Allow anonymous guest sharing links for sites and docs - 1 Point
+- Create DLP policies - 20 Points
 - Set Expiry time in days for external sharing links  -  2 Points
-
+- Provision Onedrive Sites for all users - 10 Points
+- Setup Versioning on Sharepoint Online Document Libraries - 2 Points
+- Enable IRM Protection on Sharepoint Document Libraries - 5 Points
+- Create transport rule for client auto forwarding rule block - 20 Points [not scored]
 - Enable 365 Audit Data Recording - 15 Points [not scored]
 - Disable Anonymous Calendar Sharing  - 10 Points [not scored]
-
-ENTERPRISE CLIENTS ONLY (+ 20 Points Additional)
-
-- Create DLP policies - 20 Points
 
 ATP CLIENTS ONLY (+ 30 Points Additional)
 
@@ -89,7 +88,8 @@ Write-Host 'Connecting to SPO'
 $Clientdomains = get-msoldomain | Select-Object Name
 $Msdomain = $Clientdomains.name | Select-String -Pattern 'onmicrosoft.com' | Select-String -Pattern 'mail' -NotMatch
 $Msdomain = $Msdomain -replace ".onmicrosoft.com",""
-Connect-SPOService -Url https://$Msdomain-admin.sharepoint.com -Credential $UserCredential
+$ShareSite = "https://" + $Msdomain + ".sharepoint.com"
+Connect-SPOService -Url $ShareSite -Credential $UserCredential
 
 
 ## START SECURE SCORE BASIC CONFIGURATION ##
@@ -189,60 +189,99 @@ if ($Calendars -contains 'Anonymous:CalendarSharingFreeBusyReviewer')  {
 }
 Write-Host '********************************'
 
+Write-Host 'Enabling Versioning on Sharepoint Libraries' -foregroundcolor Green
+$Sites = Get-SPOSite | Select-Object Url
+foreach ($Site in $Sites) {
+    try{
+        Write-Host "Sharepoint Site:" $Site.Url
+        $Context = New-Object Microsoft.SharePoint.Client.ClientContext($Site.Url)
+        $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($Usercredential)
+        $Context.Credentials = $Creds
+        $Web = $Context.Web
+        $Context.Load($Web)
+        $Context.load($Web.lists)
+        $Context.executeQuery()
+        foreach($List in $Web.lists) {
+            if (($List.hidden -eq $false) -and ($List.Title -notmatch "Style Library")) {
+                $List.EnableVersioning = $true
+                $LiST.MajorVersionLimit = 50
+                $List.Update()
+                $Context.ExecuteQuery() 
+                Write-host "Versioning has been turned ON for :" $List.title -foregroundcolor Green
+            }
+        }
+    } catch {
+        Write-Host "Error: $($_.Exception.Message)" -foregroundcolor Red
+    }
+}
+
+# Enable IRM Policy on Primary Sharepoint Site Document Library
+Write-Host 'Enabling IRM Policy on Sharepoint Documents Library'
+try{
+    $Context = New-Object Microsoft.SharePoint.Client.ClientContext($ShareSite)
+    $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($Username,$SecureStringPwd)
+    $Context.Credentials = $Creds
+    $Lists = $Context.Web.Lists
+    $Context.Load($Lists)
+    $Context.ExecuteQuery()
+    $List = $Lists.GetByTitle("Documents")
+    $Context.Load($List)
+    $Context.ExecuteQuery()
+    $List.IrmEnabled = $true
+    $List.InformationRightsManagementSettings.PolicyDescription = "STS IRM Policy"
+    $List.InformationRightsManagementSettings.PolicyTitle = "STS IRM Policy"
+    $List.InformationRightsManagementSettings.AllowPrint = $true
+    $List.InformationRightsManagementSettings.AllowWriteCopy = $true
+    $List.InformationRightsManagementSettings.DocumentAccessExpireDays = 14
+    $List.InformationRightsManagementSettings.EnableDocumentAccessExpire = $true
+    $List.InformationRightsManagementSettings.EnableDocumentBrowserPublishingView = $true
+    $List.Update()
+    $Context.ExecuteQuery()
+    $List.InformationRightsManagementSettings
+}
+catch{
+    write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
+}
+
+# Pre-provision Onedrive Storage for all licensed accounts
+Write-Host 'Pre-Provisioning Onedrive for all licensed users'
+$OneDriveUsers = Get-MSOLUser -All | Select-Object UserPrincipalName,islicensed | Where-Object {$_.islicensed -eq "True"}
+Request-SPOPersonalSite -UserEmails $OneDriveUsers.UserPrincipalName -NoWait
 
 
-## CHECK FOR E3 LICENSING AND APPLY ADDITIONAL SECURESCORE CONFIG ## 
-
-#########################################################################################
-
-$Licensing = Get-MsolSubscription
-  
-if ($Licensing.SkuPartNumber -contains 'ENTERPRISEPACK') {
-    
-  Write-Host 'E3 Licensing Detected'
-  Write-Host '********************************'
-  
-  # Create DLP policies - 20 Points
-  Write-Host 'Creating Data Loss Prevention Policies from Templates'
-  $Clientdlp = Get-DlpPolicy
-  if ($Clientdlp.Name -Like "Australia Financial Data") {
+# Create DLP policies - 20 Points
+Write-Host 'Creating Data Loss Prevention Policies from Templates'
+$Clientdlp = Get-DlpPolicy
+if ($Clientdlp.Name -Like "Australia Financial Data") {
     Write-Host '***DLP for Australia Financial Data Already Exists'
-  } else {
+} else {
     New-DlpPolicy -Name "Australia Financial Data" -Mode AuditAndNotify -Template 'Australia Financial Data';
     Remove-TransportRule -Identity "Australia Financial: Scan text limit exceeded" -Confirm:$false
     Remove-TransportRule -Identity "Australia Financial: Attachment not supported" -Confirm:$false
     Write-Host '***Added DLP for Australia Financial Data'
-  }
-  if ($Clientdlp.Name -Like "Australia Health Records Act (HRIP Act)") {
+}
+if ($Clientdlp.Name -Like "Australia Health Records Act (HRIP Act)") {
     Write-Host '***DLP for Australia Health Records Act (HRIP Act) Already Exists'
-  } else {
+} else {
     New-DlpPolicy -Name "Australia Health Records Act (HRIP Act)" -Mode AuditAndNotify -Template 'Australia Health Records Act (HRIP Act)'
     Remove-TransportRule -Identity "Australia HRIP: Scan text limit exceeded" -Confirm:$false
     Remove-TransportRule -Identity "Australia HRIP: Attachment not supported" -Confirm:$false
     Write-Host '***Added DLP for Australia Health Records Act (HRIP Act)'
-  }
-  if ($Clientdlp.Name -Like "Australia Privacy Act") {
+}
+if ($Clientdlp.Name -Like "Australia Privacy Act") {
     Write-Host '***DLP for Australia Privacy Act Already Exists'
-  } else {
+} else {
     New-DlpPolicy -Name "Australia Privacy Act" -Mode AuditAndNotify -Template "Australia Privacy Act"
     Remove-TransportRule -Identity "Australia Privacy: Scan text limit exceeded: Scan text limit exceeded" -Confirm:$false
     Remove-TransportRule -Identity "Australia Privacy: Attachment not supported" -Confirm:$false
     Write-Host '***Added DLP for Australia Privacy Act'
-  }  
-  
-} else { 
-
-  Write-Host 'No Enterprise licensing Detected - Skipping'
-  Write-Host '********************************'    
-} 
-Write-Host '********************************'
 
 
 
 ## CHECK FOR ATP LICENSING AND APPLY ADDITIONAL SECURESCORE CONFIG ##
 
 #########################################################################################
-
+$Licensing = Get-MsolSubscription
 if ($Licensing.SkuPartNumber -contains 'ATP_ENTERPRISE' ) {
 
   Write-Host 'Advanced Threat Protection Licensing Detected'
