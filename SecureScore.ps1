@@ -88,7 +88,7 @@ Write-Host 'Connecting to SPO'
 $Clientdomains = get-msoldomain | Select-Object Name
 $Msdomain = $Clientdomains.name | Select-String -Pattern 'onmicrosoft.com' | Select-String -Pattern 'mail' -NotMatch
 $Msdomain = $Msdomain -replace ".onmicrosoft.com",""
-$SPOSite = "https://" + $Msdomain + ".sharepoint.com"
+$SPOSite = "https://" + $Msdomain + "-admin.sharepoint.com"
 Connect-SPOService -Url $SPOSite -Credential $UserCredential
 
 
