@@ -1,6 +1,5 @@
 This Script will set a base level SecureScore on 365 Tenant based on the available licensing SKUs.
 
-
 You must install the Sharepoint Online Client SDK as a pre-requisite: 
 
 https://www.microsoft.com/en-ca/download/details.aspx?id=42038
@@ -25,11 +24,10 @@ ATP Licensed Tenants Only
 - Enable Advanced Threat Protection safe links policy - 15 Points
 - Enable Advanced Threat Protection safe attachments policy - 15 Points
 
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
 Executing the script will prompt once for Office 365 Global Admin credentials. Those credentials will then be used to access EAC, MSOnline, and SPOnline services
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
-DLP Policies are created using Australian Financial, Medical, and Privacy act templates. Swap out template names for desired policies
+DLP Policy is created using Canada Financial Data template. Swap out template names for desired policies
