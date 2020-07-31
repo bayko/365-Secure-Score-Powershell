@@ -24,7 +24,7 @@ function Set-DataLossPrevention {
         Write-Host "***Added DLP for $($TemplateName)" -ForegroundColor Green
     }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing command)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-DataLossPrevention

@@ -30,7 +30,7 @@ function Set-AnonymousCalendarSharing {
       Write-Host '***Anonymous Calendar Sharing Is Already Disabled' -ForegroundColor Blue
     }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-AnonymousCalendarSharing

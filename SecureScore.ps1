@@ -10,6 +10,7 @@ Import-Module './modules/9-SharepointIRMPolicies.psm1'
 Import-Module './modules/10-ProvisionOneDrive.psm1'
 Import-Module './modules/11-DataLossPrevention.psm1'
 Import-Module './modules/12-AdvancedThreatProtection.psm1'
+Import-Module './modules/13-DisableUserConsent.psm1'
 
 if ((Get-Module -ListAvailable -Name MSOnline) -and (Get-Module -ListAvailable -Name Microsoft.Online.Sharepoint.Powershell)) {
 } else {
@@ -30,11 +31,13 @@ function Connect-Office365 {
     -Credential $UserCredential -Authentication Basic -AllowRedirection
   Import-Module (Import-PSSession -Session $Session -DisableNameChecking -AllowClobber) -Global
   # Sharepoint Online
-  $Clientdomains = get-msoldomain | Select-Object Name
+  $Clientdomains = Get-MsolDomain | Select-Object Name
   $Msdomain = $Clientdomains.name | Select-String -Pattern 'onmicrosoft.com' | Select-String -Pattern 'mail' -NotMatch
   $Msdomain = $Msdomain -replace ".onmicrosoft.com",""
   $SPOSite = "https://" + $Msdomain + "-admin.sharepoint.com"
   Connect-SPOService -Url $SPOSite -Credential $UserCredential
+  # AzureAD
+  # Connect-AzureAD -Credential $UserCredential
 }
 
 $Credentials = Get-Credential
@@ -71,10 +74,13 @@ Set-SharepointIRMPolicies -Enabled $true -UserCredential $Credentials -PolicyNam
 Set-ProvisionOneDrive -Enabled $true
 
 # modules/11-DataLossPrevention.psm1
-Set-DataLossPrevention -Enabled $true -TemplateName "Canada Financial Data"
+#Set-DataLossPrevention -Enabled $true -TemplateName "Canada Financial Data"
 
 # modules/12-AdvancedThreatProtection.psm1
 Set-AdvancedThreatProtection -Enabled $true
+
+# modules/13-DisableUserConsent.psm1
+# Set-DisableUserConsent -Enabled $true
 
 Exit-Pssession
 Write-Host 'Base SecureScore Configuration Is Now Completed' -ForegroundColor Green

@@ -18,7 +18,7 @@ function Set-ProvisionOneDrive {
     $OneDriveUsers = Get-MSOLUser -All | Select-Object UserPrincipalName,islicensed | Where-Object {$_.islicensed -eq "True"}
     Request-SPOPersonalSite -UserEmails $OneDriveUsers.UserPrincipalName -NoWait
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-ProvisionOneDrive

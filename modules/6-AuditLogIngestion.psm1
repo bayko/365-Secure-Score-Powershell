@@ -23,7 +23,7 @@ function Set-AuditLogIngestion {
       Write-Host '***Audit Log Ingestion is now Enabled' -ForegroundColor Green
     }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-AuditLogIngestion

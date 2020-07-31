@@ -19,9 +19,9 @@ function Set-SharepointVersioning {
     $Sites = Get-SPOSite | Select-Object Url
     foreach ($Site in $Sites) {
       try{
-        Write-Host "Sharepoint Site:" $Site.Url
+        Write-Host "Sharepoint Site:" $Site.Url -ForegroundColor Green
         $Context = New-Object Microsoft.SharePoint.Client.ClientContext($Site.Url)
-        $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($UserCredential.UserName, $UserCredential.Password)
+        $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($UserCredential.Username, $UserCredential.Password)
         $Context.Credentials = $Creds
         $Web = $Context.Web
         $Context.Load($Web)
@@ -41,7 +41,7 @@ function Set-SharepointVersioning {
       }
     }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-SharepointVersioning

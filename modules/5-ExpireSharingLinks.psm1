@@ -30,7 +30,7 @@ function Set-ExpireSharingLinks {
       Write-Host "***External sharing links now set to expire after $($Days) days" -ForegroundColor Green
       }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-ExpireSharingLinks

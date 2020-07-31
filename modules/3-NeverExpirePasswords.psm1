@@ -26,7 +26,7 @@ function Set-NeverExpirePasswords {
       Write-Host '***All user passwords are now set to never expire' -ForegroundColor Green
     }
   } else {
-    Write-Host "You must provide a true boolean value for Enabled when executing Set-MailboxAuditing (Set-MailboxAuditing -Enabled $true)" -ForegroundColor Red
+    Write-Host "You must provide a true boolean value for Enabled when executing cmdlet" -ForegroundColor Red
   }
 }
 Export-ModuleMember -Function Set-NeverExpirePasswords
