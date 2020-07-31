@@ -27,8 +27,7 @@ ATP Licensed Tenants Only
 - Enable Advanced Threat Protection safe attachments policy
 
 
-```
-Executing the script will prompt once for Office 365 Global Admin credentials. Those credentials will then be used to access EAC, MSOnline, AzureAD, and SPOnline services
-```
+>Executing the script will prompt once for Office 365 Global Admin credentials. Those credentials will then be used to access EAC, MSOnline, AzureAD, and SPOnline services
 
-DLP Policy is created using Canada Financial Data template. Swap out template names for desired policies
+
+DLP Policy is created using **Canada Financial Data** template. Swap out template names for desired policies
