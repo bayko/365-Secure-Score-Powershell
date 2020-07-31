@@ -20,8 +20,9 @@ function Set-SharepointVersioning {
     foreach ($Site in $Sites) {
       try{
         Write-Host "Sharepoint Site:" $Site.Url -ForegroundColor Green
+        $pw = $UserCredential.Password | ConvertFrom-SecureString
         $Context = New-Object Microsoft.SharePoint.Client.ClientContext($Site.Url)
-        $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($UserCredential.Username, $UserCredential.Password)
+        $Creds = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($UserCredential.Username, $pw)
         $Context.Credentials = $Creds
         $Web = $Context.Web
         $Context.Load($Web)
